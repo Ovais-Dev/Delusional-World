@@ -24,6 +24,7 @@ public class GameManager : MonoBehaviour
     private DepthOfField dof;
     Vector2 lastPoint;
     Player player;
+    bool firstTime = true;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     //void Start()
     //{
@@ -59,15 +60,18 @@ public class GameManager : MonoBehaviour
         volume = FindFirstObjectByType<Volume>();
         Player.GameOverEvent += OnGameOver;
         Player.GameOverEvent += UIManager.Instance.OnGameOver;
-        if (volume.profile.TryGet(out dof) && currentState==GameState.Playing)
+        if (!firstTime)
         {
-            dof.active = false;
+            if (volume.profile.TryGet(out dof)) dof.active = false;
             UIManager.Instance.MenuEnable(false);
+            Time.timeScale = 1f;
         }
+           
         currentState = GameState.Playing;
     }
     public void StartGame()
     {
+        firstTime = false;
         currentState = GameState.Playing;
         Time.timeScale = 1f;
         if (dof != null)
